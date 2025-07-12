@@ -1,29 +1,47 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast'; // ✅ NEW
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    axios
+      .get('http://localhost/CodeBreakers/logic/check-session.php', {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.loggedIn) {
+          navigate('/home');
+        }
+      })
+      .catch((err) => {
+        console.error('Session check failed:', err);
+      });
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost/logic/login.php', {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        'http://localhost/CodeBreakers/logic/login.php',
+        { email, password },
+        { withCredentials: true }
+      );
 
       if (response.data.success) {
         navigate('/home');
       } else {
-        toast.error(response.data.message); // ✅ show toast instead of inline error
+        toast.error(response.data.message || 'Login failed');
+  console.log('Login response:', response.data);
       }
     } catch (err) {
-      toast.error('Server error. Please try again later.'); // ✅ error toast
+      toast.error('Server error. Please try again later.');
+      console.error(err);
     }
   };
 
@@ -34,8 +52,6 @@ const Login = () => {
         className="bg-surface p-8 rounded-xl shadow-xl w-full max-w-sm"
       >
         <h2 className="text-2xl text-clr font-bold text-center mb-6">Login</h2>
-
-        {/* ❌ removed inline <p className="text-error... */}
 
         <input
           type="email"
@@ -61,6 +77,7 @@ const Login = () => {
         >
           Log In
         </button>
+
         <div className="mt-4 text-sm text-muted text-center">
           Don't have an account?
           <button
@@ -71,7 +88,6 @@ const Login = () => {
             Register
           </button>
         </div>
-
       </form>
     </div>
   );

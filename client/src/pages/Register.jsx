@@ -1,31 +1,47 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const Register = () => {
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get('http://localhost/CodeBreakers/logic/check-session.php', {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.loggedIn) {
+          navigate('/home');
+        }
+      })
+      .catch((err) => {
+        console.error('Session check failed:', err);
+      });
+  }, [navigate]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost/logic/register.php', {
-        email,
-        username,
-        password,
-      });
+      const response = await axios.post(
+        'http://localhost/CodeBreakers/logic/register.php',
+        { email, name, password },
+        { withCredentials: true }
+      );
 
       if (response.data.success) {
         navigate('/home');
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message || 'Registration failed');
       }
     } catch (err) {
       toast.error('Server error. Please try again later.');
+      console.error(err);
     }
   };
 
@@ -48,10 +64,10 @@ const Register = () => {
 
         <input
           type="text"
-          placeholder="Username"
+          placeholder="Name"
           className="w-full mb-4 px-4 py-2 bg-background text-white placeholder-muted border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           required
         />
 
