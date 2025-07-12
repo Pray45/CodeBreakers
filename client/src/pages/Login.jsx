@@ -34,7 +34,7 @@ const Login = () => {
       );
 
       if (response.data.success) {
-        navigate('/hero');
+        navigate('/home');
       } else {
         toast.error(response.data.message || 'Login failed');
         console.log('Login response:', response.data);
