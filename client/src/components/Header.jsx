@@ -50,7 +50,7 @@ const Header = () => {
       <div className="text-clr font-bold text-4xl">ReWear</div>
 
       {/* Navigation Links */}
-      <nav className="hidden lg:flex gap-6 xl:gap-10 2xl:gap-14 text-base xl:text-xl font-semibold">
+      <nav className="hidden gap-6 xl:gap-10 2xl:gap-14 text-base xl:text-xl font-semibold">
         {navLinks.map((link, index) => (
           <Link
             to={link.path}

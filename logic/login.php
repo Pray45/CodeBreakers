@@ -1,60 +1,73 @@
 <?php
+session_start();
+
+// CORS headers
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+    header("Access-Control-Allow-Headers: Content-Type");
+    header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+    exit;
 }
+header("Content-Type: application/json");
 
-require_once 'session.php';
-require_once 'db.php';
+// Debug mode
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
+require 'db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
+// Capture input
+$data = json_decode(file_get_contents("php://input"), true);
+$email = trim($data['email'] ?? '');
+$password = trim($data['password'] ?? '');
 
-$data = json_decode(file_get_contents('php://input'), true);
-
-if (empty($data['email']) || empty($data['password'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Email and password are required.'
-    ]);
+// Step 1: Validate input
+if (!$email || !$password) {
+    echo json_encode(['success' => false, 'message' => 'Missing fields']);
     exit;
 }
 
-$email = $data['email'];
-$password = $data['password'];
-
-$stmt = $pdo->prepare("SELECT user_id, name, email, password_hash, role, points FROM users WHERE email = ?");
+// Step 2: Fetch user
+$stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
 $stmt->execute([$email]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$user = $stmt->fetch();
 
-if (!$user || !password_verify($password, $user['password_hash'])) {
+if (!$user) {
     echo json_encode([
         'success' => false,
-        'message' => 'Invalid email or password.'
+        'message' => 'User not found',
+        'debug' => ['input_email' => $email]
     ]);
     exit;
 }
 
-session_regenerate_id(true);
-$_SESSION['user_id'] = $user['user_id'];
-$_SESSION['role'] = $user['role'];
-$_SESSION['name'] = $user['name'];
+// Step 3: Debug password match
+$isPasswordCorrect = password_verify($password, $user['password_hash']);
+
+if (!$isPasswordCorrect) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Incorrect password',
+        'debug' => [
+            'input_password' => $password,
+            'stored_hash' => $user['password_hash'],
+            'password_verified' => false
+        ]
+    ]);
+    exit;
+}
+
+// Step 4: Store session and return user
+$_SESSION['user'] = [
+    'id' => $user['user_id'],
+    'name' => $user['name'],
+    'email' => $user['email'],
+    'role' => $user['role']
+];
 
 echo json_encode([
     'success' => true,
     'message' => 'Login successful',
-    'user' => [
-        'user_id' => $user['user_id'],
-        'name' => $user['name'],
-        'email' => $user['email'],
-        'role' => $user['role'],
-        'points' => $user['points']
-    ]
+    'user' => $_SESSION['user']
 ]);

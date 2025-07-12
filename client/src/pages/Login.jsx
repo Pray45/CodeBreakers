@@ -9,27 +9,36 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await axios.post(
-        'http://localhost/CodeBreakers/logic/login.php',
-        { email, password },
-        { withCredentials: true }
-      );
+  try {
+    const response = await axios.post(
+      'http://localhost/CodeBreakers/logic/login.php',
+      { email, password },
+      { withCredentials: true }
+    );
 
-      if (response.data.success) {
-        sessionStorage.setItem('user', JSON.stringify(response.data.user));
-        navigate('/');
+    if (response.data.success) {
+      const user = response.data.user;
+
+      sessionStorage.setItem('user', JSON.stringify(user));
+
+      toast.success('Login successful!');
+
+      if (user.role === 'admin') {
+        navigate('/admin/dashboard');
       } else {
-        toast.error(response.data.message || 'Login failed');
-        console.log('Login response:', response.data);
+        navigate('/');
       }
-    } catch (err) {
-      toast.error('Server error. Please try again later.');
-      console.error(err);
+
+    } else {
+      toast.error(response.data.message || 'Login failed');
     }
-  };
+  } catch (err) {
+    toast.error('Server error. Please try again later.');
+    console.error(err);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background text-white px-4">
