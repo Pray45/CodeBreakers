@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -7,21 +7,6 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-
-  useEffect(() => {
-    axios
-      .get('http://localhost/CodeBreakers/logic/check-session.php', {
-        withCredentials: true,
-      })
-      .then((res) => {
-        if (res.data.loggedIn) {
-          navigate('/home');
-        }
-      })
-      .catch((err) => {
-        console.error('Session check failed:', err);
-      });
-  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -34,14 +19,15 @@ const Login = () => {
       );
 
       if (response.data.success) {
-        navigate('/home');
+        sessionStorage.setItem('user', JSON.stringify(response.data.user));
+        navigate('/');
       } else {
         toast.error(response.data.message || 'Login failed');
         console.log('Login response:', response.data);
       }
     } catch (err) {
-        toast.error('Server error. Please try again later.');
-        console.error(err);
+      toast.error('Server error. Please try again later.');
+      console.error(err);
     }
   };
 
