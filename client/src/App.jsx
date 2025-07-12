@@ -3,7 +3,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import './index.css';
-import Productlisting from './pages/Productlisting';
+import ProductDetail from './pages/ProductDetail';
 import AdminDashboard from './pages/AdminDashboard';
 import UserDashboard from './pages/UserDashboard';
 
@@ -16,7 +16,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/product" element={<Productlisting />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/user/dashboard" element={<UserDashboard />} />
         <Route path="*" element={<div className="text-center mt-20 text-red-500 text-xl">404 – Page Not Found</div>} />
