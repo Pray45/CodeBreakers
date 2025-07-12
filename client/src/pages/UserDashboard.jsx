@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
@@ -70,7 +70,12 @@ const UserDashboard = () => {
         >
           Logout
         </button>
-      </div>
+        
+        </div><Link
+            to={`/home`}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        >Go to Home</Link>
+        <br /><br />
 
       {/* Orders Section */}
       <div className="mb-10">
@@ -82,7 +87,7 @@ const UserDashboard = () => {
             {orders.map((order) => (
               <li key={order.order_id} className="p-4 bg-surface rounded-lg shadow-md">
                 <p className="font-bold text-primary">Order #{order.order_id}</p>
-                <p><strong>Item:</strong> {order.item_name}</p>
+                <p><strong>Item ID:</strong> {order.item_id}</p>
                 <p><strong>Status:</strong> {order.status}</p>
                 <p className="text-sm text-muted">
                   {new Date(order.created_at).toLocaleString()}
