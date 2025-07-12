@@ -34,14 +34,14 @@ const Login = () => {
       );
 
       if (response.data.success) {
-        navigate('/home');
+        navigate('/hero');
       } else {
         toast.error(response.data.message || 'Login failed');
-  console.log('Login response:', response.data);
+        console.log('Login response:', response.data);
       }
     } catch (err) {
-      toast.error('Server error. Please try again later.');
-      console.error(err);
+        toast.error('Server error. Please try again later.');
+        console.error(err);
     }
   };
 
