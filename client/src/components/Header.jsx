@@ -11,7 +11,7 @@ const navLinks = [
 const Header = () => {
   return (
     <header className="bg-surface pl-16 py-4 flex justify-between items-center border-b border-muted">
-      <div className="text-primary font-bold text-xl">ReWear</div>
+      <div className="text-clr font-bold text-4xl">ReWear</div>
 
       {/* Navigation Links */}
       <nav className="hidden lg:flex gap-6 xl:gap-10 2xl:gap-14 text-base xl:text-xl font-semibold">
@@ -19,7 +19,7 @@ const Header = () => {
           <Link
             to={link.path}
             key={index}
-            className="relative text-muted group transition duration-200 hover:text-primary cursor-pointer"
+            className="relative text-muted text-clr group transition duration-200 hover:text-primary cursor-pointer"
           >
             {link.name}
             <span className="absolute left-0 -bottom-0.5 h-[4px] w-full scale-x-0 bg-white transition-transform duration-300 group-hover:scale-x-100 origin-center" />
@@ -39,6 +39,7 @@ const Header = () => {
         {/* Auth Buttons */}
         <button className="bg-primary   text-white px-5 py-2 rounded-2xl font-semibold hover:opacity-90 transition">Shop Now</button>
         <button className="border-2 border-white text-white px-5 py-2 rounded-2xl font-semibold hover:opacity-90 transition">Shop Now</button>
+        <button onClick={() => (sessionStorage.clear())} className="border-2 border-white text-white px-5 py-2 rounded-2xl font-semibold hover:opacity-90 transition">Logout</button>
       </div>
     </header>
   );

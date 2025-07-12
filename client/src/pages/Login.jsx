@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -8,22 +8,40 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    axios
+      .get('http://localhost/CodeBreakers/logic/check-session.php', {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.loggedIn) {
+          navigate('/home');
+        }
+      })
+      .catch((err) => {
+        console.error('Session check failed:', err);
+      });
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost/logic/login.php', {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        'http://localhost/CodeBreakers/logic/login.php',
+        { email, password },
+        { withCredentials: true }
+      );
 
       if (response.data.success) {
         navigate('/hero');
       } else {
+
         toast.error(response.data.message);
       }
     } catch (err) {
-      toast.error('Server error. Please try again later.'); 
+      toast.error('Server error. Please try again later.');
+      console.error(err);
     }
   };
 
@@ -59,6 +77,7 @@ const Login = () => {
         >
           Log In
         </button>
+
         <div className="mt-4 text-sm text-muted text-center">
           Don't have an account?
           <button
@@ -69,7 +88,6 @@ const Login = () => {
             Register
           </button>
         </div>
-
       </form>
     </div>
   );
