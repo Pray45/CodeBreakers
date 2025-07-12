@@ -93,25 +93,11 @@ const Header = () => {
             {menuOpen && (
               <div className="absolute right-0 top-12 bg-white shadow-lg rounded-md text-black w-40 z-50">
                 <Link
-                  to="/orders"
+                  to="/user/dashboard"
                   className="block px-4 py-2 hover:bg-gray-100"
                   onClick={() => setMenuOpen(false)}
                 >
-                  My Orders
-                </Link>
-                <Link
-                  to="/listings"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  My Listings
-                </Link>
-                <Link
-                  to="/profile"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Profile
+                  Dashboard
                 </Link>
                 <button
                   onClick={handleLogout}

@@ -21,7 +21,7 @@ const AdminDashboard = () => {
     } else if (activeTab === 'listings') {
     axios.get('http://localhost/CodeBreakers/logic/get-listings.php', { withCredentials: true })
       .then(res => {
-        console.log('Items Response:', res.data); // 👀 Check console
+        console.log('Items Response:', res.data); //  Check console
         if (res.data.success) {
           setItems(res.data.items);
         }
@@ -45,7 +45,19 @@ const handleCancelOrder = async (orderId) => {
     console.error('Error cancelling order:', err);
   }
 };
-
+const handleLogout = async () => {
+  try {
+    await axios.post(
+      'http://localhost/CodeBreakers/logic/logout.php',
+      {},
+      { withCredentials: true }
+    );
+    sessionStorage.removeItem('user');
+    window.location.href = '/'; // or use navigate('/')
+  } catch (err) {
+    console.error('Logout failed:', err);
+  }
+};
 const handleRemoveListing = async (itemId) => {
   try {
     const res = await axios.post(
@@ -90,6 +102,15 @@ const handleRemoveListing = async (itemId) => {
       <h1 className="text-3xl font-bold text-primary mb-6 text-center">Admin Dashboard</h1>
 
       {/* Top Menu */}
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-semibold"
+        >
+          Logout
+        </button>
+      </div>
+
       <div className="flex justify-center gap-8 mb-8">
         {['users', 'orders', 'listings'].map((tab) => (
           <button
