@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast'; // ✅ NEW
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,12 +18,12 @@ const Login = () => {
       });
 
       if (response.data.success) {
-        navigate('/home');
+        navigate('/hero');
       } else {
-        toast.error(response.data.message); // ✅ show toast instead of inline error
+        toast.error(response.data.message);
       }
     } catch (err) {
-      toast.error('Server error. Please try again later.'); // ✅ error toast
+      toast.error('Server error. Please try again later.'); 
     }
   };
 
@@ -34,8 +34,6 @@ const Login = () => {
         className="bg-surface p-8 rounded-xl shadow-xl w-full max-w-sm"
       >
         <h2 className="text-2xl text-clr font-bold text-center mb-6">Login</h2>
-
-        {/* ❌ removed inline <p className="text-error... */}
 
         <input
           type="email"

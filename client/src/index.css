@@ -25,6 +25,9 @@
 .text-clr {
   color: var(--color-text);
 }     
+.text-bclr {
+  color: var(black);
+}     
 .bg-muted {
   background-color: var(--color-muted);
 }
